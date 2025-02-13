@@ -4,13 +4,16 @@ const fs = require('fs');
 const path = require('path');
 
 function main() {
-  const [source, dest] = process.argv.slice(2);
+  const [sourceVar, destVar] = process.argv.slice(2);
 
-  if (source === undefined || dest === undefined) {
+  if (sourceVar === undefined || destVar === undefined) {
     console.error('Specify params');
 
     return;
   }
+
+  const source = sourceVar.replaceAll(path.sep, '/');
+  const dest = destVar.replaceAll(path.sep, '/');
 
   if (!fs.existsSync(source)) {
     console.error('Source file does not exist');
@@ -19,18 +22,18 @@ function main() {
   }
 
   if (source === dest) {
+    console.log('The destination is same as source');
+
     return;
   }
 
-  const sourcePath = source.split('\\');
+  const sourcePath = source.split('/');
   const sourceFileName = sourcePath.at(-1);
-  // const sourceDirectory = sourcePath.slice(0, -1).join('/');
 
-  const destPath = dest.split('\\');
-  // const destFileName = destPath.at(-1);
+  const destPath = dest.split('/');
   const destDirectory = destPath.slice(0, -1).join('/');
 
-  if (dest.endsWith('\\')) {
+  if (dest.endsWith('/')) {
     const folderExists = fs.existsSync(dest);
 
     if (folderExists) {
@@ -60,7 +63,6 @@ function main() {
   }
 
   console.error('Folder does not exist');
-
 }
 
 main();
